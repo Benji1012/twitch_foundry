@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Twitch Extension Panel</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #18181b;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #9147ff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #772ce8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Üdv a Panelen!</h1>
+  <p>Kattints a gombra!</p>
+  <button id="rollButton">Dobás!</button>
+
+  <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+  <script>
+    // Twitch Extension API betöltése
+    Twitch.ext.onAuthorized(function(auth) {
+      console.log("Authorized!", auth);
+      // auth.token -> JWT Token
+      // auth.userId -> Viewer ID
+    });
+
+    document.getElementById('rollButton').addEventListener('click', function() {
+      alert('Dobás indítva!');
+      // Itt tudsz majd API hívást indítani a szerveredre, ha akarsz!
+    });
+  </script>
+</body>
+</html>

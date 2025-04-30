@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Konfiguráció</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 400px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #6441a5;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #523190;
+        }
+        .output {
+            margin-top: 30px;
+            padding: 15px;
+            background: #e0e0e0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Beállítások megadása</h1>
+
+    <label for="channelName">Twitch csatorna neve:</label>
+    <input type="text" id="channelName" placeholder="pl. nagyben" />
+
+    <label for="foundryApiKey">Foundry API kulcs:</label>
+    <input type="text" id="foundryApiKey" placeholder="pl. c8955f23d65938c19fd5b86bd42e799f" />
+
+    <button onclick="generateConfig()">Konfiguráció generálása</button>
+
+    <div class="output" id="output"></div>
+
+    <script>
+        function generateConfig() {
+            const channelName = document.getElementById('channelName').value.trim();
+            const foundryApiKey = document.getElementById('foundryApiKey').value.trim();
+
+            const config = `
+String channelName = "${channelName}"; // Twitch csatorna neve
+String foundryApiKey = "${foundryApiKey}"; // Foundry API kulcs
+            `.trim();
+
+            document.getElementById('output').innerText = config;
+        }
+    </script>
+
+</body>
+</html>
