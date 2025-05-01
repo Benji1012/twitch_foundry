@@ -49,8 +49,15 @@ public class SimpleWebServer {
         String foundryApiUrl = config.getProperty("foundryApiUrl");
         String foundryApiKey = config.getProperty("foundryApiKey");
         
+        String player1Name = config.getProperty("player1Name");
+        String player2Name = config.getProperty("player2Name");
+        String player3Name = config.getProperty("player3Name");
+        String player4Name = config.getProperty("player4Name");
+        String player5Name = config.getProperty("player5Name");
+        String player6Name = config.getProperty("player6Name");
         
-        new TwitchDiceBot(twitchToken, channelName, foundryApiUrl, foundryApiKey);
+        
+        new TwitchDiceBot(twitchToken, channelName, foundryApiUrl, foundryApiKey,player1Name,player2Name,player3Name,player4Name,player5Name,player6Name);
         System.out.println("Server started at http://localhost:8080/");
     }
 }

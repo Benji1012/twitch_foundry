@@ -7,8 +7,15 @@ public class TwitchDiceBot {
     private final TwitchClient twitchClient;
     private final FoundryApiClient foundryClient;
     private final String channelName;
+    private Player player1;
+    private Player player2;
+    private Player player3;
+    private Player player4;
+    private Player player5;
+    private Player player6;
 
-    public TwitchDiceBot(String twitchToken, String channelName, String foundryApiUrl , String foundryApiKey) throws Exception {
+    public TwitchDiceBot(String twitchToken, String channelName, String foundryApiUrl , String foundryApiKey, String player1Name, String player2Name, 
+    		String player3Name, String player4Name, String player5Name, String player6Name) throws Exception {
         this.channelName = channelName;
 
         // Twitch Client
@@ -17,12 +24,29 @@ public class TwitchDiceBot {
             .withChatAccount(oauthCredential(twitchToken))
             .build();
 
-        // Foundry API Client (új, HTTP-alapú)
-//        clientId = "foundry-"+clientId ;
         this.foundryClient = new FoundryApiClient(foundryApiUrl, foundryApiKey);
 
         twitchClient.getChat().joinChannel(channelName);
-       
+       // downloadIds();
+        if(!player1Name.equals("")) {
+        	player1 = new Player(player1Name, this.foundryClient);
+        }
+        if(!player2Name.equals("")) {
+        	player2 = new Player(player2Name, this.foundryClient);
+        }
+        if(!player3Name.equals("")) {
+        	player3 = new Player(player3Name, this.foundryClient);
+        }
+        if(!player4Name.equals("")) {
+        	player4 = new Player(player4Name, this.foundryClient);
+        }
+        if(!player5Name.equals("")) {
+        	player5 = new Player(player5Name, this.foundryClient);
+        }
+        if(!player6Name.equals("")) {
+        	player6 = new Player(player6Name, this.foundryClient);
+        }
+        System.out.println("Player1: "+player1.toString());
         registerListeners();
     }
 
@@ -45,7 +69,26 @@ public class TwitchDiceBot {
                         e.printStackTrace();
                     }
                 }
-            }
+            }else if (message.startsWith("!"+player1.getName())) {
+            	 String response = player1.toString();  // this will call your `toString()` method
+                 twitchClient.getChat().sendMessage(channelName, response);
+            }else if (message.startsWith("!"+player2.getName())) {
+	           	 String response = player2.toString();  // this will call your `toString()` method
+	             twitchClient.getChat().sendMessage(channelName, response);
+	        }else if (message.startsWith("!"+player3.getName())) {
+		       	 String response = player3.toString();  // this will call your `toString()` method
+		         twitchClient.getChat().sendMessage(channelName, response);
+		    }else if (message.startsWith("!"+player4.getName())) {
+			   	 String response = player4.toString();  // this will call your `toString()` method
+			     twitchClient.getChat().sendMessage(channelName, response);
+			}else if (message.startsWith("!"+player5.getName())) {
+				 String response = player5.toString();  // this will call your `toString()` method
+			     twitchClient.getChat().sendMessage(channelName, response);
+			}else if (message.startsWith("!"+player6.getName())) {
+				 String response = player6.toString();  // this will call your `toString()` method
+			     twitchClient.getChat().sendMessage(channelName, response);
+			}
+            
         });
     }
 
@@ -60,6 +103,19 @@ public class TwitchDiceBot {
         }
         return null;
     }
+    
+   
+	public TwitchClient getTwitchClient() {
+		return twitchClient;
+	}
+
+	public FoundryApiClient getFoundryClient() {
+		return foundryClient;
+	}
+
+	public String getChannelName() {
+		return channelName;
+	}
 }
 
 //    public static void main(String[] args) throws Exception {

@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -45,13 +46,6 @@ public class FoundryApiClient {
   }
 
     public synchronized void rollDice(String formula, String viewerName) throws Exception {
-//        String json = String.format("{\"formula\":\"%s\",", formula);
-//         json += String.format("\"itemUuid\":\"%s\",", "");
-//         json += String.format("\"flavor\":\"%s\",", viewerName);
-//         json += String.format("\"createChatMessage\":\"%s\",", true);
-//         json += String.format("\"target\":\"%s\",", "");
-//         json += String.format("\"speaker\":\"%s\",", "");
-//         json += String.format("\"whisper\":\"%s\"}", "[]");
          JSONObject payload = new JSONObject();
          payload.put("formula", formula);
          payload.put("flavor", viewerName);
@@ -71,6 +65,86 @@ public class FoundryApiClient {
             .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("Dice roll result: " + response.body());
+//        System.out.println("Dice roll result: " + response.body());
     }
+    
+    public String getPlayerIdByName(String playerName) {
+    	 HttpRequest request = HttpRequest.newBuilder()
+    	            .uri(URI.create(baseUrl + "/search?clientId=" + clientId+"&query="+playerName+"&filter=name:"+playerName+",documentType:actor"))
+    	            .header("x-api-key", apiKey)
+    	            .header("Content-Type", "application/json")
+    	            .GET()
+    	            .build();
+    	 
+    	 HttpResponse<String> response;
+		try {
+			response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			 System.out.println("Search result: " + response.body());
+			 // Parse the JSON response
+		        JSONObject json = new JSONObject(response.body());
+		        JSONArray results = json.getJSONArray("results");
+		        if (results.length() > 0) {
+		            JSONObject firstResult = results.getJSONObject(0);
+		            return firstResult.getString("uuid"); // or getString("uuid")
+		        } else {
+		            return null; // No results found
+		        }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+        
+    }
+    
+    public JSONObject getPlayerStastByUUid(String playerUuid) {
+   	 HttpRequest request = HttpRequest.newBuilder()
+   	            .uri(URI.create(baseUrl + "/get?clientId=" + clientId+"&uuid="+playerUuid))
+   	            .header("x-api-key", apiKey)
+   	            .header("Content-Type", "application/json")
+   	            .GET()
+   	            .build();
+   	 
+   	 HttpResponse<String> response;
+		try {
+			response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			 System.out.println("Search result: " + response.body());
+			 // Parse the JSON response
+		        JSONObject json = new JSONObject(response.body());
+		       
+	            return json; 
+		        
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+       
+   }
+    
+    public synchronized Integer getAc(String playerUuid) throws Exception {
+       JSONObject payload = new JSONObject();
+       payload.put("script", "const uuid = '"+playerUuid+"';"
+       		+ " const document = await fromUuid(uuid);if (!document) return null;"
+       		+ "const actor = document instanceof Actor ? document : document.actor;if (!actor) return null;const ac = actor.system.attributes.ac;return ac?.value ?? null;");
+       
+      HttpRequest request = HttpRequest.newBuilder()
+          .uri(URI.create(baseUrl + "/execute-js?clientId=" + clientId))
+          .header("x-api-key", apiKey)
+          .header("Content-Type", "application/json")
+          .POST(HttpRequest.BodyPublishers.ofString(payload.toString()))
+          .build();
+
+      HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+      JSONObject json = new JSONObject(response.body());
+      Integer ac = json.getInt("result");
+     
+      return ac;
+  }
 }
