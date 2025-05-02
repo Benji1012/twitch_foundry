@@ -14,14 +14,15 @@
         }
         label {
             display: block;
-            margin-top: 20px;
+            margin-top: 10px;
             margin-bottom: 5px;
             font-weight: bold;
         }
         input[type="text"] {
-            width: 400px;
+            width: 100%;
             padding: 10px;
             font-size: 16px;
+            box-sizing: border-box;
         }
         button {
             margin-top: 30px;
@@ -42,35 +43,118 @@
             background: #e0e0e0;
             font-family: monospace;
         }
+
+        /* Container for player inputs */
+        #playerInputs {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr); /* 6 equal columns */
+            gap: 20px;
+        }
+
+        /* Adjustments for each player input */
+        #playerInputs div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .player-name,
+        .player-image {
+            margin-top: 5px;
+        }
+
+        /* Make sure all fields are aligned properly */
+        .column-label {
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Beállítások megadása</h1>
+    <h1>Configuration</h1>
 
-    <label for="channelName">Twitch csatorna neve:</label>
+    <label for="channelName">Twitch channel name:</label>
     <input type="text" id="channelName" placeholder="pl. nagyben" />
 
-    <label for="foundryApiKey">Foundry API kulcs:</label>
+    <label for="foundryApiKey">Foundry API key:</label>
     <input type="text" id="foundryApiKey" placeholder="pl. c8955f23d65938c19fd5b86bd42e799f" />
 
-    <button onclick="generateConfig()">Konfiguráció generálása</button>
+    <h2>Characters</h2>
+    <div id="playerInputs">
+      <div class="column-label">
+        <label>Character 1 name:</label>
+        <input type="text" class="player-name" placeholder="pl. Erus" />
+        <label>Image 1 URL:</label>
+        <input type="text" class="player-image" placeholder="https://..." />
+      </div>
+      <div class="column-label">
+        <label>Character 2 name:</label>
+        <input type="text" class="player-name" placeholder="pl. Kenus" />
+        <label>Image 2 URL:</label>
+        <input type="text" class="player-image" placeholder="https://..." />
+      </div>
+      <div class="column-label">
+        <label>Character 3 name:</label>
+        <input type="text" class="player-name" />
+        <label>Image 3 URL:</label>
+        <input type="text" class="player-image" />
+      </div>
+      <div class="column-label">
+        <label>Character 4 name:</label>
+        <input type="text" class="player-name" />
+        <label>Image 4 URL:</label>
+        <input type="text" class="player-image" />
+      </div>
+      <div class="column-label">
+        <label>Character 5 name:</label>
+        <input type="text" class="player-name" />
+        <label>Image 5 URL:</label>
+        <input type="text" class="player-image" />
+      </div>
+      <div class="column-label">
+        <label>Character 6 name:</label>
+        <input type="text" class="player-name" />
+        <label>Image 6 URL:</label>
+        <input type="text" class="player-image" />
+      </div>
+    </div>
+
+    <button onclick="generateConfig()">Save configuration</button>
 
     <div class="output" id="output"></div>
 
-    <script>
-        function generateConfig() {
-            const channelName = document.getElementById('channelName').value.trim();
-            const foundryApiKey = document.getElementById('foundryApiKey').value.trim();
+	 <script>
+	        function generateConfig() {
+	            const channelName = document.getElementById('channelName').value.trim();
+	            const foundryApiKey = document.getElementById('foundryApiKey').value.trim();
 
-            const config = `
-String channelName = "${channelName}"; // Twitch csatorna neve
-String foundryApiKey = "${foundryApiKey}"; // Foundry API kulcs
-            `.trim();
+	            let playersConfig = '';
+	            for (let i = 1; i <= 6; i++) {
+	                const playerName = document.querySelector(`.player-name:nth-of-type(${i})`);
+	                const playerImage = document.querySelector(`.player-image:nth-of-type(${i})`);
 
-            document.getElementById('output').innerText = config;
-        }
-    </script>
+	                // Check if elements exist before accessing values
+	                const name = playerName ? playerName.value.trim() : '';
+	                const image = playerImage ? playerImage.value.trim() : '';
 
-</body>
-</html>
+	                // If both name and image are provided, include in the config
+	                if (name && image) {
+	                    playersConfig += `
+	                Character ${i} name = "${name}";
+	                Character ${i} image = "${image}";
+	                    `.trim() + '\n';
+	                }
+	            }
+
+	            const config = `
+	String channelName = "${channelName}"; // Twitch channel name
+	String foundryApiKey = "${foundryApiKey}"; // Foundry API key
+	${playersConfig} // Character configuration
+	            `.trim();
+
+	            document.getElementById('output').innerText = config;
+	        }
+	    </script>
+
+	</body>
+	</html>

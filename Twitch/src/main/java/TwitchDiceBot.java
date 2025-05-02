@@ -116,7 +116,16 @@ public class TwitchDiceBot {
 	public String getChannelName() {
 		return channelName;
 	}
+	
+	public Player getPlayer1() { return player1; }
+	public Player getPlayer2() { return player2; }
+	public Player getPlayer3() { return player3; }
+	public Player getPlayer4() { return player4; }
+	public Player getPlayer5() { return player5; }
+	public Player getPlayer6() { return player6; }
 }
+
+
 
 //    public static void main(String[] args) throws Exception {
 //        String twitchToken = "oauth:mtrc34w0ixhqykb2qytp2az964m6zd"; // Twitch Bot token

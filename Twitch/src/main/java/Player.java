@@ -124,6 +124,10 @@ public class Player {
 	public String toString() {
 		return name + " AC: " + ac + " HP: "+ currentHp + " / " + maxHp + " STR: "+ str + " DEX: " + dex + " CON: " + con + " INT: " + intel + " WIS: " + wis + " CHA: " + cha ;
 	}
+
+	public FoundryApiClient getFoundryClient() {
+		return foundryClient;
+	}
 	
 	
 	

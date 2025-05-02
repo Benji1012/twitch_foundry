@@ -29,25 +29,47 @@
       background-color: #772ce8;
     }
   </style>
-</head>
-<body>
-  <h1>Üdv a Panelen!</h1>
-  <p>Kattints a gombra!</p>
-  <button id="rollButton">Dobás!</button>
-
   <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
-  <script>
-    // Twitch Extension API betöltése
-    Twitch.ext.onAuthorized(function(auth) {
-      console.log("Authorized!", auth);
-      // auth.token -> JWT Token
-      // auth.userId -> Viewer ID
-    });
 
-    document.getElementById('rollButton').addEventListener('click', function() {
-      alert('Dobás indítva!');
-      // Itt tudsz majd API hívást indítani a szerveredre, ha akarsz!
-    });
-  </script>
+</head>
+	<body>
+	  <h1>Játékosok</h1>
+	  <div id="playersContainer">Betöltés...</div>
+
+	  <script>
+	   const auth = { token: "dummy_token_for_testing" };
+			fetch("http://localhost:8080/players", {
+	        headers: {
+	          'Authorization': 'Bearer ' + auth.token // optional if you validate Twitch tokens
+	        }
+	      })
+	      .then(res => res.json())
+	      .then(players => {
+	        const container = document.getElementById("playersContainer");
+	        container.innerHTML = ""; // clear loading message
+
+	        if (players.length === 0) {
+	          container.innerText = "Nincs játékos.";
+	        } else {
+	          players.forEach(player => {
+	            const card = document.createElement("div");
+	            card.style.marginBottom = "20px";
+	            card.innerHTML = `
+				<h2>${player.name}</h2>
+				  <p>AC: ${player.ac}</p>
+				  <p>HP: ${player.currentHp} / ${player.maxHp}</p>
+				  <p>STR: ${player.str}, DEX: ${player.dex}, CON: ${player.con}</p>
+				  <p>INT: ${player.intel}, WIS: ${player.wis}, CHA: ${player.cha}</p>
+	            `;
+	            container.appendChild(card);
+	          });
+	        }
+	      })
+	      .catch(err => {
+	        document.getElementById("playersContainer").innerText = "Hiba a játékosok lekérésekor.";
+	        console.error("Hiba:", err);
+	      });
+	   
+	  </script>
 </body>
 </html>
