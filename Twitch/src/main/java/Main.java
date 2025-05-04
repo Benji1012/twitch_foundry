@@ -3,7 +3,9 @@ import com.sun.net.httpserver.HttpHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -15,8 +17,9 @@ public class Main {
         Properties config = new Properties();
       
 
-        HttpServer server = HttpServer.create(new java.net.InetSocketAddress(8080), 0);
-
+//        HttpServer server = HttpServer.create(new java.net.InetSocketAddress(8000), 0);
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         
         
         config.load(Main.class.getClassLoader().getResourceAsStream("config.properties"));
@@ -36,7 +39,12 @@ public class Main {
         server.createContext("/config.html", new HttpHandler() {
             @Override
             public void handle(HttpExchange exchange) throws IOException {
-                byte[] bytes = Files.readAllBytes(Paths.get("src/main/resources/config.html"));
+            	InputStream in = Main.class.getClassLoader().getResourceAsStream("config.html");
+            	if (in == null) {
+            	    exchange.sendResponseHeaders(404, -1);
+            	    return;
+            	}
+            	byte[] bytes = in.readAllBytes();
                 exchange.getResponseHeaders().add("Content-Type", "text/html");
                 exchange.sendResponseHeaders(200, bytes.length);
                 OutputStream os = exchange.getResponseBody();
@@ -76,7 +84,13 @@ public class Main {
         server.createContext("/panel.html", new HttpHandler() {
             @Override
             public void handle(HttpExchange exchange) throws IOException {
-                byte[] bytes = Files.readAllBytes(Paths.get("src/main/resources/panel.html"));
+//                byte[] bytes = Files.readAllBytes(Paths.get("src/main/resources/panel.html"));
+                InputStream in = Main.class.getClassLoader().getResourceAsStream("panel.html");
+                if (in == null) {
+                    exchange.sendResponseHeaders(404, -1);
+                    return;
+                }
+                byte[] bytes = in.readAllBytes();
                 exchange.getResponseHeaders().add("Content-Type", "text/html");
                 exchange.sendResponseHeaders(200, bytes.length);
                 OutputStream os = exchange.getResponseBody();
