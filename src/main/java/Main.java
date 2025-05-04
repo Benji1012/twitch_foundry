@@ -22,7 +22,13 @@ public class Main {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         
         
-        config.load(Main.class.getClassLoader().getResourceAsStream("config.properties"));
+        InputStream configStream = Main.class.getClassLoader().getResourceAsStream("config.properties");
+        if (configStream == null) {
+            System.err.println("⚠️ Could not load config.properties!");
+            System.exit(1); // or skip loading to test
+        }
+        config.load(configStream);
+        System.out.println("✅ Loaded config.properties");
 
         String twitchToken = config.getProperty("twitchToken");
         String channelName = config.getProperty("channelName");
@@ -57,7 +63,9 @@ public class Main {
             String response = "OK";
             exchange.sendResponseHeaders(200, response.length());
             exchange.getResponseBody().write(response.getBytes());
-            exchange.close();
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
         });
 
         
