@@ -53,6 +53,14 @@ public class Main {
             }
         });
         
+        server.createContext("/", exchange -> {
+            String response = "OK";
+            exchange.sendResponseHeaders(200, response.length());
+            exchange.getResponseBody().write(response.getBytes());
+            exchange.close();
+        });
+
+        
         TwitchDiceBot bot = new TwitchDiceBot(twitchToken, channelName, foundryApiUrl, foundryApiKey,player1Name,player2Name,player3Name,player4Name,player5Name,player6Name);
         
         server.createContext("/players", new HttpHandler() {
