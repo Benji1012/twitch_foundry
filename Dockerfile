@@ -1,12 +1,9 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:24-jdk-alpine
 
 WORKDIR /app
 
-COPY deploy.jar /app/deploy.jar
-COPY config.html /app/config.html
-COPY panel.html /app/panel.html
-COPY config.properties /app/config.properties
+COPY target/Twitch-0.0.1-SNAPSHOT-jar-with-dependencies.jar app.jar
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "deploy.jar"]
+CMD ["java", "-jar", "app.jar"]
