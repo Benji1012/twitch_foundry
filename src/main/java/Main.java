@@ -107,7 +107,10 @@ public class Main {
             }
         });
 
+        System.out.println("Attempting to start server...");
         server.start();
+        System.out.println("Server started at http://localhost:" + port + "/");
+
         
        
         
